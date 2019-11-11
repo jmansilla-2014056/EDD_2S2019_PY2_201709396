@@ -1,6 +1,7 @@
 package Principal;
 
 import Modelos.ArbolAVL;
+import Modelos.Archivo;
 import Modelos.MatrizAdyacente;
 import Modelos.TablaHash;
 import Modelos.Usuario;
@@ -9,6 +10,14 @@ public class Main {
 
     public static void main (String [ ] args) {
 
+          
+        ArbolAVL avl = new ArbolAVL("x");
+        avl.insertar(new Archivo("a","a","a"));
+        avl.insertar(new Archivo("b","b","b"));
+        avl.insertar(new Archivo("c","c","c"));
+        avl.preorden(avl.getRaiz());
+        avl.graficar();
+        
         TablaHash tablaHash = new TablaHash();
         tablaHash.insertarUsuario(new Usuario("jesus","jesus"));
         tablaHash.insertarUsuario(new Usuario("robert","jesus"));
@@ -41,34 +50,14 @@ public class Main {
 
         MatrizAdyacente matrizAdyacente2=new MatrizAdyacente();
 
-        matrizAdyacente2.insertar_elementos(2,3,new ArbolAVL("x"));
-        matrizAdyacente2.insertar_elementos(3,4,new ArbolAVL("y"));
-        matrizAdyacente2.insertar_elementos(2,2,new ArbolAVL("z"));
+        matrizAdyacente2.insertar_elementos(0,0,new ArbolAVL("x"));
+        matrizAdyacente2.insertar_elementos(0,1,new ArbolAVL("y"));
+        matrizAdyacente2.insertar_elementos(1,0,new ArbolAVL("z"));
         matrizAdyacente2.insertar_elementos(3,5,new ArbolAVL("w"));
 
         matrizAdyacente2.recorrer();
         matrizAdyacente2.graficar();
-
-
-        MatrizAdyacente matrizAdyacente3=new MatrizAdyacente();
-
-        matrizAdyacente3.insertar_elementos(2,3,new ArbolAVL("x"));
-        matrizAdyacente3.insertar_elementos(3,4,new ArbolAVL("y"));
-        matrizAdyacente3.insertar_elementos(2,2,new ArbolAVL("z"));
-        matrizAdyacente3.insertar_elementos(3,5,new ArbolAVL("w"));
-        matrizAdyacente3.insertar_elementos(2,5,new ArbolAVL("x"));
-        matrizAdyacente3.insertar_elementos(5,4,new ArbolAVL("y"));
-        matrizAdyacente3.insertar_elementos(6,2,new ArbolAVL("z"));
-        matrizAdyacente3.insertar_elementos(7,5,new ArbolAVL("w"));
-        matrizAdyacente3.insertar_elementos(3,6,new ArbolAVL("x"));
-        matrizAdyacente3.insertar_elementos(6,7,new ArbolAVL("y"));
-        matrizAdyacente3.insertar_elementos(3,2,new ArbolAVL("z"));
-        matrizAdyacente3.insertar_elementos(6,6,new ArbolAVL("w"));
-
-
-
-        matrizAdyacente3.recorrer();
-        matrizAdyacente3.graficar();
+      
 
 
     }

@@ -57,6 +57,8 @@ public class CrearDiagrama {
                     if(comprobar.length() > 100){
                         break;
                     }
+                }else{
+                    break;
                 }
                 System.out.println(x);
             }
@@ -69,13 +71,13 @@ public class CrearDiagrama {
             File file = new File(miDir.getAbsolutePath()  +"\\"+titulo+".png");
             Path path = Paths.get(miDir.getAbsolutePath()  +"\\"+titulo+".png");
             if(file.exists()){
-                Files.delete(path);
+              //  Files.delete(path);
             }
 
             File file2 = new File(miDir.getAbsolutePath()  +"\\"+titulo+".txt");
             Path path2 = Paths.get(miDir.getAbsolutePath()  +"\\"+titulo+".txt");
             if(file2.exists()){
-                Files.delete(path2);
+               // Files.delete(path2);
             }
 
 
