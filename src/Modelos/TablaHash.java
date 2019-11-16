@@ -15,6 +15,7 @@ public class TablaHash {
     int size;
     int items;
 
+   
 
     public TablaHash() {
         this.size = 7;
@@ -22,6 +23,39 @@ public class TablaHash {
         items = 0;
     }
 
+    public String getFileName() {
+        return fileName;
+    }
+
+    public void setFileName(String fileName) {
+        this.fileName = fileName;
+    }
+
+    public Usuario[] getUsuarios() {
+        return usuarios;
+    }
+
+    public void setUsuarios(Usuario[] usuarios) {
+        this.usuarios = usuarios;
+    }
+
+    public int getSize() {
+        return size;
+    }
+
+    public void setSize(int size) {
+        this.size = size;
+    }
+
+    public int getItems() {
+        return items;
+    }
+
+    public void setItems(int items) {
+        this.items = items;
+    }
+
+    
 
     public void insertarUsuario(Usuario usuario){
         if(!existe(usuario.getUsuario())){

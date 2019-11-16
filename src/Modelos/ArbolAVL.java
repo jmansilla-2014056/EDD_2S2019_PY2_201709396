@@ -4,18 +4,30 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.PrintWriter;
 import java.text.SimpleDateFormat;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.Stack;
+import javax.swing.JOptionPane;
 import static manejador.CrearDiagrama.creacionDibujo;
 
 
 public class ArbolAVL {
     String fileName;
     private NodoArbol raiz;
-    private String nombre;
+    private String ruta;
+    private ArrayList<Archivo> listaArchivos;
+
+    public ArrayList<Archivo> getListaArchivos() {
+        return listaArchivos;
+    }
+
+    public void setListaArchivos(ArrayList<Archivo> listaArchivos) {
+        this.listaArchivos = listaArchivos;
+    }
 
     public ArbolAVL(String nombre) {
-        this.nombre = nombre;
+        this.ruta = nombre;
     }
 
     public NodoArbol getRaiz() {
@@ -26,12 +38,12 @@ public class ArbolAVL {
         this.raiz = raiz;
     }
 
-    public String getNombre() {
-        return nombre;
+    public String getRuta() {
+        return ruta;
     }
 
-    public void setNombre(String nombre) {
-        this.nombre = nombre;
+    public void setRuta(String nombre) {
+        this.ruta = nombre;
     }
 
     
@@ -50,14 +62,15 @@ public class ArbolAVL {
     int getFe(NodoArbol x) {
         if (x == null) {
             return -1;
+        }else{
+            return x.getFactorDeEquilibrio();
         }
 
-        return x.getFactorDeEquilibrio();
     }
 
     NodoArbol SimpleLeft(NodoArbol x) {
         NodoArbol aux = x.getHojaIzquierda();
-        x.setHojaIzquierda(aux);
+        x.setHojaIzquierda(aux.getHojaDerecha());
         aux.setHojaDerecha(x);  
         x.factorDeEquilibrio =   Math.max(getFe(x.getHojaIzquierda()), getFe(x.getHojaDerecha())) + 1;
         aux.factorDeEquilibrio = Math.max(getFe(aux.getHojaIzquierda()), getFe(aux.getHojaDerecha())) + 1;
@@ -117,7 +130,7 @@ public class ArbolAVL {
                 }
             }
         } else {
-            System.out.println("Nodo ya EXISTE");
+            
         }
 
         // actualizando la altura
@@ -132,13 +145,65 @@ public class ArbolAVL {
 
     }    
     
-    public void insertar(Archivo archivo) {
+    
+     public void Eliminar(Archivo archivo){
+        this.inno();
+        for(Archivo a : this.getListaArchivos()){
+            if(a.getNombreArchivo().equals(archivo.getNombreArchivo())){
+                this.getListaArchivos().remove(a);
+                break;
+            }
+        }
+        this.raiz = null;
+        for(Archivo a: this.getListaArchivos()){
+            this.insertar(a);
+        }
+        
+    }
+    
+    public void Eliminar(NodoArbol nodo){
+        this.inno();
+        for(Archivo a : this.getListaArchivos()){
+            if(a.getNombreArchivo().equals(nodo.getArchivo().getNombreArchivo())){
+                this.getListaArchivos().remove(a);
+                break;
+            }
+        }
+        this.raiz = null;
+        for(Archivo a: this.getListaArchivos()){
+            this.insertar(a);
+        }
+        
+    }
+    
+    
+    public void modificar(NodoArbol nodo){
+        
+    }
+    
+    public ArbolAVL insertar(Archivo archivo) {
         NodoArbol nuevo = new NodoArbol(archivo);
+        this.inno();
+        
+        boolean bandera = false;
+        
+        for(Archivo a: this.getListaArchivos()){
+            if(a.getNombreArchivo().equals(archivo.getNombreArchivo())){
+                int reply = JOptionPane.showConfirmDialog(null, "Se encontro duplicado, sobreescribir?", "Duplicado", JOptionPane.YES_NO_OPTION);
+                if (reply == JOptionPane.YES_OPTION) {
+                    this.Eliminar(archivo);
+                    this.insertar(archivo);
+                }
+            }
+        }
+        
+        
         if (raiz == null) {
             raiz = nuevo;
         } else {
             raiz = insertarAvl(nuevo, raiz);
         }
+        return this;
     }    
     
      public void preorden(NodoArbol aux) {
@@ -149,6 +214,24 @@ public class ArbolAVL {
             preorden(aux.getHojaDerecha());
         }
     }
+     
+    public void inno(){
+        this.setListaArchivos(new ArrayList<>());
+        InnOrder(this.raiz);
+    } 
+    
+    public void InnOrder(NodoArbol nodo){
+       
+        if(nodo != null){
+            InnOrder(nodo.getHojaIzquierda());
+            System.out.println("**************************************************");
+            System.out.println(nodo.getArchivo().getNombreArchivo());
+            this.getListaArchivos().add(nodo.getArchivo());
+            InnOrder(nodo.getHojaDerecha());
+        }
+    }
+     
+      
     
     public void graficar(){
         FileWriter fichero = null;
@@ -171,7 +254,12 @@ public class ArbolAVL {
                     current = current.getHojaIzquierda();
                 }else if(!stack.empty()){
                     current = (NodoArbol) stack.pop();
-                    pw.println(current.getArchivo().getNombreArchivo()+"[label={"+"\""+current.getArchivo()+" Fe:"+current.getFactorDeEquilibrio()+ " Contenido:"+ current.getArchivo().getContenido() + "}\"]");
+                    int peso = current.getArchivo().getContenido().length();
+                    int idea = 30;
+                    if(idea>peso){
+                        idea = peso;
+                    }
+                    pw.println(current.getArchivo().getNombreArchivo()+"[shape = record, label=\"{"+current.getArchivo().getNombreArchivo()+"| Fe:"+current.getFactorDeEquilibrio()+ "| Contenido:"+ current.getArchivo().getContenido().substring(0,idea)+ "| Fecha" + current.getArchivo().getFechas().toString() + "}\"]");
                     if(current.getHojaDerecha()!=null){
                         pw.println(current.getArchivo().getNombreArchivo()+"->"+current.getHojaDerecha().getArchivo().getNombreArchivo());           
                     }

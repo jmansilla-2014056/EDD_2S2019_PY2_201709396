@@ -8,10 +8,16 @@ public class Archivo {
     private String extension;
     private LocalDateTime fechas;
 
-    public Archivo(String nombreArchivo, String contenido, String extension) {
+    public Archivo(String nombreArchivo, String contenido) {
+       
+        if(!nombreArchivo.contains(".")){
+            nombreArchivo = nombreArchivo +".txt";
+        }
+        String[] separar = nombreArchivo.split("\\.");
+       
         this.nombreArchivo = nombreArchivo;
-        this.contenido = contenido;
-        this.extension = extension;
+        this.contenido = contenido;       
+        this.extension = separar[1];
         this.fechas = LocalDateTime.now();
     }
 

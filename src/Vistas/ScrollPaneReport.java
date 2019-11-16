@@ -29,11 +29,12 @@ public class ScrollPaneReport extends JFrame implements KeyListener {
     public ScrollPaneReport(String rut) {
         super("JScrollPane Demo");
         this.rut = rut;
-        addKeyListener(this);
+     // addKeyListener(this);
         ImageIcon ii = new ImageIcon(rut);
         jsp = new JScrollPane(new JLabel(ii));
         this.getContentPane().add(jsp);
         this.setSize(300, 250);
+        this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         this.setVisible(true);
 
     }

@@ -36,6 +36,34 @@ public class MatrizAdyacente {
     }
 
 
+    public void insertarEnLaInterseccion(String nodoPadre, String nodoHijo){
+        NodoMatriz nm = buscar(0,0);
+        NodoMatriz nb = nm.getAbajo();
+        NodoMatriz ng = nm.getDerecha();
+        int y=0;
+        int x=0;
+        while(true){
+            if(nb.getArbolAVL().getRuta().equals(nodoPadre)){
+                y=nb.getY();
+                break;
+            }else{
+                nb = nb.getAbajo();
+            }
+        }
+        while(true){
+            if(ng.getArbolAVL().getRuta().equals(nodoHijo)){
+                x=ng.getX();
+                break;
+            }else{
+                ng = ng.getDerecha();
+            }
+        }
+        this.insertar_elementos(x, y, new ArbolAVL(nodoHijo));
+        
+    }
+            
+            
+    
     public NodoMatriz insertar_ordenado_columna(NodoMatriz nuevo, NodoMatriz cabeza){
         NodoMatriz temp = cabeza;
         boolean bandera = false;
@@ -153,7 +181,7 @@ public class MatrizAdyacente {
                     aux1 = aux1.getDerecha();
                     continue;
                 }
-                System.out.println(aux1.getX() +"," + aux1.getY() + " : " +  aux1.getArbolAVL().getNombre());
+                System.out.println(aux1.getX() +"," + aux1.getY() + " : " +  aux1.getArbolAVL().getRuta());
                 aux1 = aux1.getDerecha();
                 c++;
             }
@@ -161,6 +189,50 @@ public class MatrizAdyacente {
         }
     }
 
+    public NodoMatriz buscar(int x, int y){
+        NodoMatriz aux = this.root;
+        int c = 1;
+        while (aux!=null) {
+            NodoMatriz aux1 = aux;
+            while (aux1!=null){
+                if(aux1.getY()==-1 || aux1.getX() == -1){
+                    aux1 = aux1.getDerecha();
+                    continue;
+                }
+                if(aux1.getX()==x && aux1.getY()==y){
+                    return aux1;
+                }
+                System.out.println(aux1.getX() +"," + aux1.getY() + " : " +  aux1.getArbolAVL().getRuta());
+                aux1 = aux1.getDerecha();
+                c++;
+            }
+            aux = aux.getAbajo();
+        }
+        return null;
+    }
+    
+    public NodoMatriz buscarInterseccion(String ruta){
+        NodoMatriz aux = this.root;
+        int c = 1;
+        while (aux!=null) {
+            NodoMatriz aux1 = aux;
+            while (aux1!=null){
+                if(aux1.getY()==-1 || aux1.getX() == -1){
+                    aux1 = aux1.getDerecha();
+                    continue;
+                }
+                if(aux1.getX()>=1 && aux1.getY()>=1 && aux1.getArbolAVL().getRuta().equals(ruta)){
+                    return aux1;
+                }
+                System.out.println(aux1.getX() +"," + aux1.getY() + " : " +  aux1.getArbolAVL().getRuta());
+                aux1 = aux1.getDerecha();
+                c++;
+            }
+            aux = aux.getAbajo();
+        }
+        return null;
+    }
+    
     public void graficar(){
         FileWriter fichero = null;
         PrintWriter pw = null;
@@ -172,8 +244,8 @@ public class MatrizAdyacente {
             pw = new PrintWriter(fichero);
 
             pw.println("digraph {");
-            pw.println("node [shape = rectangle, height=0.5, width=1.2];");
-            pw.println("graph [nodesep = 1]");
+            pw.println("node [shape = record, height=1, width=2, fontsize=8];");
+            pw.println("graph [nodesep = 2, ranksep = 1]");
             pw.println("rankdir=TB");
             NodoMatriz tempA = this.root;
             NodoMatriz temp = this.root;
@@ -183,11 +255,15 @@ public class MatrizAdyacente {
             while (tempA != null){
                 if(tempA == this.root){
                     if(temp == this.root){
-                        pw.println("\""+temp.getX()+"-"+temp.getY()+"\"[label=\""+temp.getArbolAVL().getNombre()+"\"];");
+                        pw.println("\""+temp.getX()+"-"+temp.getY()+"\"[label=\""+temp.getArbolAVL().getRuta()+
+                                "\"\n"+",pos=\""+(temp.getX()+1)+","+(temp.getY()+1)+"!\""+
+                                "];");
                         temp = temp.getAbajo();
                     }
                     else if(temp != null){
-                        pw.println("\""+temp.getX()+"-"+temp.getY()+"\"[label=\""+temp.getY()+"\"];");
+                        pw.println("\""+temp.getX()+"-"+temp.getY()+"\"[label=\""+temp.getY()+
+                                "\"\n"+",pos=\""+(temp.getX()+1)+","+(temp.getY()+1)+"!\""+
+                                "];");
                         temp = temp.getAbajo();
                     }
                     else{
@@ -197,12 +273,14 @@ public class MatrizAdyacente {
                 }
                 else{
                     if(primera){
-                        pw.println("\"" + temp.getX() +"-"+temp.getY()+"\"[label=\""+temp.getX()+"\"];");
+                        pw.println("\"" + temp.getX() +"-"+temp.getY()+"\"[label=\""+temp.getX()+
+                                "\"\n"+",pos=\""+(temp.getX()+1)+","+(temp.getY()+1)+"!\""+
+                                "];");
                         temp= temp.getAbajo();
                         primera = false;
                     }
                     else if(temp != null){
-                        pw.println("\"" +temp.getX()+"-"+temp.getY()+"\"[label=\""+temp.getArbolAVL().getNombre()+"\"];");
+                        pw.println("\"" +temp.getX()+"-"+temp.getY()+"\"[label=\""+temp.getArbolAVL().getRuta()+"\"];");
                         temp = temp.getAbajo();
                     }
                     else {

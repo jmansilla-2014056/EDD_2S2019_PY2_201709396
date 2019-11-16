@@ -5,20 +5,22 @@ import Modelos.Archivo;
 import Modelos.MatrizAdyacente;
 import Modelos.TablaHash;
 import Modelos.Usuario;
+import Vistas.Sesion;
 
 public class Main {
-
+    
+public static TablaHash tablaHash;
     public static void main (String [ ] args) {
 
           
         ArbolAVL avl = new ArbolAVL("x");
-        avl.insertar(new Archivo("a","a","a"));
-        avl.insertar(new Archivo("b","b","b"));
-        avl.insertar(new Archivo("c","c","c"));
-        avl.preorden(avl.getRaiz());
-        avl.graficar();
+        avl.insertar(new Archivo("haahah.txt","a"));
+        avl.insertar(new Archivo("amen.mp4","b"));
+        avl.insertar(new Archivo("bebecita.mp3","c"));
+     //   avl.preorden(avl.getRaiz());
+        avl.inno();
         
-        TablaHash tablaHash = new TablaHash();
+        tablaHash = new TablaHash();
         tablaHash.insertarUsuario(new Usuario("jesus","jesus"));
         tablaHash.insertarUsuario(new Usuario("robert","jesus"));
         tablaHash.insertarUsuario(new Usuario("emili","jesus"));
@@ -36,7 +38,7 @@ public class Main {
         tablaHash.insertarUsuario(new Usuario("auron","jesus"));
         tablaHash.insertarUsuario(new Usuario("el pequeño auron","jesus"));
         tablaHash.Reccorer();
-        tablaHash.reportar();
+    
 
         MatrizAdyacente matrizAdyacente=new MatrizAdyacente();
 
@@ -45,8 +47,7 @@ public class Main {
         matrizAdyacente.insertar_elementos(2,2,new ArbolAVL("dos coma dos"));
         matrizAdyacente.insertar_elementos(3,5,new ArbolAVL("tre coma cinco"));
 
-        matrizAdyacente.recorrer();
-        matrizAdyacente.graficar();
+        
 
         MatrizAdyacente matrizAdyacente2=new MatrizAdyacente();
 
@@ -55,10 +56,9 @@ public class Main {
         matrizAdyacente2.insertar_elementos(1,0,new ArbolAVL("z"));
         matrizAdyacente2.insertar_elementos(3,5,new ArbolAVL("w"));
 
-        matrizAdyacente2.recorrer();
-        matrizAdyacente2.graficar();
+        Sesion sesion = new Sesion();
+        sesion.setVisible(true);
       
-
 
     }
 

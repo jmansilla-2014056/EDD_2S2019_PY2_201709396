@@ -8,16 +8,11 @@ package manejador;
 import Vistas.ScrollPaneReport;
 
 import java.io.File;
-import java.awt.image.BufferedImage;
-import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-import javax.imageio.ImageIO;
-import javax.swing.ImageIcon;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
+
 /**
  *
  * @author User
@@ -57,8 +52,6 @@ public class CrearDiagrama {
                     if(comprobar.length() > 100){
                         break;
                     }
-                }else{
-                    break;
                 }
                 System.out.println(x);
             }
@@ -77,7 +70,7 @@ public class CrearDiagrama {
             File file2 = new File(miDir.getAbsolutePath()  +"\\"+titulo+".txt");
             Path path2 = Paths.get(miDir.getAbsolutePath()  +"\\"+titulo+".txt");
             if(file2.exists()){
-               // Files.delete(path2);
+              //  Files.delete(path2);
             }
 
 
