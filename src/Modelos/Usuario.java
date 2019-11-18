@@ -38,11 +38,14 @@ public class Usuario {
     public Usuario(String usuario, String contrasena) {
         this.fecha = LocalDateTime.now();
         this.matrizAdyacente = new MatrizAdyacente();
-        this.matrizAdyacente.insertar_elementos(0, 1, new ArbolAVL("./"));
+        this.matrizAdyacente.insertar_elementos(0, 1, new ArbolAVL("./",".","."));
         this.matrizAdyacente.insertar_elementos(0, 0, new ArbolAVL("."));
-        this.matrizAdyacente.insertar_elementos(1, 0, new ArbolAVL("./"));
+        this.matrizAdyacente.insertar_elementos(1, 0, new ArbolAVL("./",".","."));
        
         this.usuario = usuario;
         this.contrasena = contrasena;
     }
+    
+   
+    
 }

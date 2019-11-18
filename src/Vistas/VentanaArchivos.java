@@ -10,14 +10,26 @@ import Modelos.Archivo;
 import Modelos.MatrizAdyacente;
 import Modelos.NodoMatriz;
 import Modelos.Usuario;
+import Principal.Main;
+import static Vistas.VentanaArchivos.replaceLast;
 import java.awt.Image;
+import java.io.BufferedReader;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
+import java.time.LocalDateTime;
 import javax.swing.DefaultListModel;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import manejador.ListEntry;
 import manejador.ListEntryCellRenderer;
 
@@ -38,6 +50,7 @@ public final class VentanaArchivos extends javax.swing.JFrame {
         initComponents();
         nodoPadre = Sesion.Usuarioglobal.getMatrizAdyacente().buscar(0, yPadre);
         LlenarCarpetas();
+        LlenarArchivos();
         interseccion = null;
     }
     
@@ -112,7 +125,7 @@ public final class VentanaArchivos extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jCrear = new javax.swing.JButton();
+        jCrearCarpeta = new javax.swing.JButton();
         jbusacador = new javax.swing.JTextField();
         jGraficar = new javax.swing.JButton();
         jBuscar = new javax.swing.JButton();
@@ -129,25 +142,31 @@ public final class VentanaArchivos extends javax.swing.JFrame {
         jGraficar1 = new javax.swing.JButton();
         jSeparator4 = new javax.swing.JSeparator();
         EliminarArchivo = new javax.swing.JButton();
-        jButton1 = new javax.swing.JButton();
+        jEditar = new javax.swing.JButton();
         jScrollPane3 = new javax.swing.JScrollPane();
         jTextContenido = new javax.swing.JTextArea();
         jTextFileName = new javax.swing.JTextField();
         jFecha = new javax.swing.JLabel();
+        jGrafo = new javax.swing.JButton();
+        jButton2 = new javax.swing.JButton();
+        jButtonCompartir = new javax.swing.JButton();
+        jButtonEliminarArchivos = new javax.swing.JButton();
+        jButtonEliminarCarpetas = new javax.swing.JButton();
+        jButtonEditarCarpeta = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setResizable(false);
 
-        jCrear.setText("Crear");
-        jCrear.addActionListener(new java.awt.event.ActionListener() {
+        jCrearCarpeta.setText("Crear");
+        jCrearCarpeta.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jCrearActionPerformed(evt);
+                jCrearCarpetaActionPerformed(evt);
             }
         });
 
         jbusacador.setText("./");
 
-        jGraficar.setText("Graficar");
+        jGraficar.setText("Ver Matriz");
         jGraficar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jGraficarActionPerformed(evt);
@@ -200,7 +219,7 @@ public final class VentanaArchivos extends javax.swing.JFrame {
             }
         });
 
-        jGraficar1.setText("Graficar");
+        jGraficar1.setText("Ver Arbol");
         jGraficar1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jGraficar1ActionPerformed(evt);
@@ -214,10 +233,10 @@ public final class VentanaArchivos extends javax.swing.JFrame {
             }
         });
 
-        jButton1.setText("Editar");
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
+        jEditar.setText("Editar");
+        jEditar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
+                jEditarActionPerformed(evt);
             }
         });
 
@@ -227,6 +246,48 @@ public final class VentanaArchivos extends javax.swing.JFrame {
 
         jFecha.setText("Fecha:");
 
+        jGrafo.setText("ver Grafo");
+        jGrafo.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jGrafoActionPerformed(evt);
+            }
+        });
+
+        jButton2.setText("Cerrar Sesion");
+        jButton2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton2ActionPerformed(evt);
+            }
+        });
+
+        jButtonCompartir.setText("Compartir");
+        jButtonCompartir.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonCompartirActionPerformed(evt);
+            }
+        });
+
+        jButtonEliminarArchivos.setText("Carga Masiva");
+        jButtonEliminarArchivos.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonEliminarArchivosActionPerformed(evt);
+            }
+        });
+
+        jButtonEliminarCarpetas.setText("Eliminar");
+        jButtonEliminarCarpetas.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonEliminarCarpetasActionPerformed(evt);
+            }
+        });
+
+        jButtonEditarCarpeta.setText("Editar");
+        jButtonEditarCarpeta.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonEditarCarpetaActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -235,41 +296,48 @@ public final class VentanaArchivos extends javax.swing.JFrame {
             .addComponent(jSeparator3)
             .addComponent(jSeparator4)
             .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addContainerGap()
+                        .addComponent(jbusacador, javax.swing.GroupLayout.PREFERRED_SIZE, 392, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(jBuscar, javax.swing.GroupLayout.PREFERRED_SIZE, 98, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jButton2))
+                    .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 387, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addGroup(layout.createSequentialGroup()
-                                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 387, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(18, 18, 18)
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                    .addComponent(jCrearArchivo, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                    .addComponent(EliminarArchivo, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                    .addComponent(jButton1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                    .addComponent(jGraficar1, javax.swing.GroupLayout.PREFERRED_SIZE, 99, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addGap(38, 38, 38)
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                    .addComponent(jTextFileName)
-                                    .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 197, Short.MAX_VALUE)
-                                    .addComponent(jFecha, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(jbusacador, javax.swing.GroupLayout.PREFERRED_SIZE, 392, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(jBuscar, javax.swing.GroupLayout.PREFERRED_SIZE, 98, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 387, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(18, 18, 18)
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                    .addComponent(jCrear, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                    .addComponent(jGraficar, javax.swing.GroupLayout.DEFAULT_SIZE, 101, Short.MAX_VALUE)
-                                    .addComponent(jAbrirCarpeta, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))))
+                                .addGap(166, 166, 166)
+                                .addComponent(jLabel2)))
+                        .addGap(18, 18, 18)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(jCrearArchivo, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(jEditar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(jGraficar1, javax.swing.GroupLayout.DEFAULT_SIZE, 99, Short.MAX_VALUE)
+                            .addComponent(jButtonCompartir, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(jButtonEliminarArchivos, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(EliminarArchivo, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addGap(38, 38, 38)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(jTextFileName)
+                            .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 197, Short.MAX_VALUE)
+                            .addComponent(jFecha, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(169, 169, 169)
-                        .addComponent(jLabel1))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(176, 176, 176)
-                        .addComponent(jLabel2)))
-                .addContainerGap(56, Short.MAX_VALUE))
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 387, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGroup(layout.createSequentialGroup()
+                                .addGap(159, 159, 159)
+                                .addComponent(jLabel1)))
+                        .addGap(18, 18, 18)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(jCrearCarpeta, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(jGraficar, javax.swing.GroupLayout.DEFAULT_SIZE, 101, Short.MAX_VALUE)
+                            .addComponent(jAbrirCarpeta, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(jGrafo, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(jButtonEliminarCarpetas, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(jButtonEditarCarpeta, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
+                .addGap(22, 22, 22))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -277,62 +345,81 @@ public final class VentanaArchivos extends javax.swing.JFrame {
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(jbusacador, javax.swing.GroupLayout.DEFAULT_SIZE, 31, Short.MAX_VALUE)
-                    .addComponent(jBuscar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(jBuscar)
+                        .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(jSeparator3, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 182, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, Short.MAX_VALUE)
+                        .addComponent(jLabel1)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addGroup(layout.createSequentialGroup()
                         .addComponent(jGraficar)
+                        .addGap(11, 11, 11)
+                        .addComponent(jGrafo)
+                        .addGap(13, 13, 13)
+                        .addComponent(jCrearCarpeta)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jCrear)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jAbrirCarpeta))
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 182, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jLabel1)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jAbrirCarpeta)
+                        .addGap(18, 18, 18)
+                        .addComponent(jButtonEliminarCarpetas)
+                        .addGap(18, 18, 18)
+                        .addComponent(jButtonEditarCarpeta)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                 .addComponent(jSeparator2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(25, 25, 25)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(36, 36, 36)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jGraficar1)
-                            .addComponent(jTextFileName, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(layout.createSequentialGroup()
-                                .addComponent(jCrearArchivo)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(EliminarArchivo)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(jButton1))
+                                .addGap(11, 11, 11)
+                                .addComponent(jTextFileName, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(jGraficar1))
+                        .addGap(2, 2, 2)
+                        .addComponent(jButtonEliminarArchivos)
+                        .addGap(23, 23, 23)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(layout.createSequentialGroup()
                                 .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 105, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jFecha, javax.swing.GroupLayout.PREFERRED_SIZE, 21, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addGap(0, 0, Short.MAX_VALUE))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 184, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addGap(18, 18, 18)
+                                .addComponent(jFecha, javax.swing.GroupLayout.PREFERRED_SIZE, 21, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(jCrearArchivo)
+                                .addGap(18, 18, 18)
+                                .addComponent(jButtonCompartir)
+                                .addGap(18, 18, 18)
+                                .addComponent(jEditar)
+                                .addGap(18, 18, 18)
+                                .addComponent(EliminarArchivo))))
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 224, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(18, 18, Short.MAX_VALUE)
                 .addComponent(jLabel2)
-                .addGap(32, 32, 32)
+                .addGap(27, 27, 27)
                 .addComponent(jSeparator4, javax.swing.GroupLayout.PREFERRED_SIZE, 11, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
+                .addGap(18, 18, 18))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jCrearActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jCrearActionPerformed
-        String nombreCarpeta = JOptionPane.showInputDialog(null, "Nombre de Carpeta");
+    private void jCrearCarpetaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jCrearCarpetaActionPerformed
+        try{
+            String nombreCarpeta = "Nuvea" + LocalDateTime.now().toString();
+        nombreCarpeta = JOptionPane.showInputDialog(null, "Nombre de Carpeta");
+        if(nombreCarpeta.contains("/")){
+            JOptionPane.showMessageDialog(null, "No se permite llamar asi la carpeta");
+            return;
+        }
         int x=0;
         while(true){
             if(Sesion.Usuarioglobal.getMatrizAdyacente().buscar(0, yPadre+x)==null){
-                Sesion.Usuarioglobal.getMatrizAdyacente().insertar_elementos(yPadre+x, 0, new ArbolAVL(nodoPadre.getArbolAVL().getRuta()+nombreCarpeta+"/"));
-                Sesion.Usuarioglobal.getMatrizAdyacente().insertar_elementos(0, yPadre+x, new ArbolAVL(nodoPadre.getArbolAVL().getRuta()+nombreCarpeta+"/"));
-                Sesion.Usuarioglobal.getMatrizAdyacente().insertarEnLaInterseccion(nodoPadre.getArbolAVL().getRuta(), nodoPadre.getArbolAVL().getRuta()+nombreCarpeta+"/");
+                Sesion.Usuarioglobal.getMatrizAdyacente().insertar_elementos(yPadre+x, 0, new ArbolAVL(nodoPadre.getArbolAVL().getRuta()+nombreCarpeta+"/",nombreCarpeta,nombreCarpeta));
+                Sesion.Usuarioglobal.getMatrizAdyacente().insertar_elementos(0, yPadre+x, new ArbolAVL(nodoPadre.getArbolAVL().getRuta()+nombreCarpeta+"/",nombreCarpeta,nombreCarpeta));
+                Sesion.Usuarioglobal.getMatrizAdyacente().insertarEnLaInterseccion(nodoPadre.getArbolAVL().getRuta(), nodoPadre.getArbolAVL().getRuta()+nombreCarpeta+"/", nodoPadre.getArbolAVL().getNombreAuxiliar()+"/"+nombreCarpeta, nombreCarpeta);
                 break;
             }else{
                 x++;
@@ -340,7 +427,10 @@ public final class VentanaArchivos extends javax.swing.JFrame {
 
         }
         LlenarCarpetas();
-    }//GEN-LAST:event_jCrearActionPerformed
+        }catch(NullPointerException n){
+            
+        }
+    }//GEN-LAST:event_jCrearCarpetaActionPerformed
 
     
     private void jGraficarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jGraficarActionPerformed
@@ -349,7 +439,8 @@ public final class VentanaArchivos extends javax.swing.JFrame {
     }//GEN-LAST:event_jGraficarActionPerformed
 
     private void jAbrirCarpetaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jAbrirCarpetaActionPerformed
-         NodoMatriz temp = nodoPadre.getDerecha();
+        try{
+            NodoMatriz temp = nodoPadre.getDerecha();
          int index = jListCarpetas.getSelectedIndex();
          for(int i=0; i<index;i++){
              temp = temp.getDerecha();
@@ -378,11 +469,21 @@ public final class VentanaArchivos extends javax.swing.JFrame {
          this.yPadre = nodoPadre.getY();
          LlenarArchivos();
          LlenarCarpetas();
+        }catch(NullPointerException w){
+            
+        }
+        
     }//GEN-LAST:event_jAbrirCarpetaActionPerformed
 
     private void jCrearArchivoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jCrearArchivoActionPerformed
-            
-        String nombreArchivo = JOptionPane.showInputDialog(null, "Nombre del Archivo");
+        try{
+        String nombreArchivo = "Nuevo"+LocalDateTime.now().toString()+".txt";
+        nombreArchivo = JOptionPane.showInputDialog(null, "Nombre del Archivo");
+        
+        if(nombreArchivo==null){
+            return;
+        }
+        
         JTextArea ta = new JTextArea(20, 20);
         ta.setText("Ingrese Contenido");
         switch (JOptionPane.showConfirmDialog(null, new JScrollPane(ta))) {
@@ -390,8 +491,8 @@ public final class VentanaArchivos extends javax.swing.JFrame {
                 System.out.println(ta.getText());
                 break;        
         }
-        String contenidoArchivo = ta.getText();
-        
+        String contenidoArchivo = ta.getText().replaceAll("\"", "");
+        nombreArchivo = nombreArchivo.replaceAll("\"", "");
         if(this.interseccion==null){
             NodoMatriz temp = Sesion.Usuarioglobal.getMatrizAdyacente().buscar(nodoPadre.getX(), nodoPadre.getY());
             Sesion.Usuarioglobal.getMatrizAdyacente().buscar(temp.getX(),temp.getY()).getArbolAVL().insertar(new Archivo(nombreArchivo,contenidoArchivo));
@@ -401,6 +502,10 @@ public final class VentanaArchivos extends javax.swing.JFrame {
             Sesion.Usuarioglobal.getMatrizAdyacente().buscar(temp.getX(),temp.getY()).getArbolAVL().insertar(new Archivo(nombreArchivo,contenidoArchivo));
         }
         LlenarArchivos();
+        }catch(NullPointerException r){
+            
+        }
+       
     }//GEN-LAST:event_jCrearArchivoActionPerformed
 
     
@@ -452,18 +557,26 @@ public final class VentanaArchivos extends javax.swing.JFrame {
     }//GEN-LAST:event_jBuscarActionPerformed
 
     private void EliminarArchivoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_EliminarArchivoActionPerformed
-        if(interseccion == null){
-            NodoMatriz temp = this.nodoPadre;
-            temp.getArbolAVL().inno();
-            Archivo archivo = temp.getArbolAVL().getListaArchivos().get(this.jListArchivos.getSelectedIndex());
-            Sesion.Usuarioglobal.getMatrizAdyacente().buscar(temp.getX(),temp.getY()).getArbolAVL().Eliminar(archivo);
-        }else{
-            NodoMatriz temp = this.interseccion;
-            temp.getArbolAVL().inno();
-            Archivo archivo = temp.getArbolAVL().getListaArchivos().get(this.jListArchivos.getSelectedIndex());
-            Sesion.Usuarioglobal.getMatrizAdyacente().buscar(temp.getX(),temp.getY()).getArbolAVL().Eliminar(archivo);
-        }
+        try{
+            int reply = JOptionPane.showConfirmDialog(null, "desea eliminar?", "Eliminar", JOptionPane.YES_NO_OPTION);
+        if (reply == JOptionPane.YES_OPTION) {
+            if(interseccion == null){
+                NodoMatriz temp = this.nodoPadre;
+                temp.getArbolAVL().inno();
+                Archivo archivo = temp.getArbolAVL().getListaArchivos().get(this.jListArchivos.getSelectedIndex());
+                Sesion.Usuarioglobal.getMatrizAdyacente().buscar(temp.getX(),temp.getY()).getArbolAVL().Eliminar(archivo);
+            }else{
+                NodoMatriz temp = this.interseccion;
+                temp.getArbolAVL().inno();
+                Archivo archivo = temp.getArbolAVL().getListaArchivos().get(this.jListArchivos.getSelectedIndex());
+                Sesion.Usuarioglobal.getMatrizAdyacente().buscar(temp.getX(),temp.getY()).getArbolAVL().Eliminar(archivo);
+            }
         this.LlenarArchivos();
+        }
+        }catch(ArrayIndexOutOfBoundsException r){
+            
+        }
+        
     }//GEN-LAST:event_EliminarArchivoActionPerformed
 
     private void jListArchivosMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jListArchivosMouseClicked
@@ -489,7 +602,7 @@ public final class VentanaArchivos extends javax.swing.JFrame {
        
     }//GEN-LAST:event_jListArchivosMouseClicked
 
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+    private void jEditarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jEditarActionPerformed
         if(interseccion == null){
             NodoMatriz temp = this.nodoPadre;
             temp.getArbolAVL().inno();
@@ -511,8 +624,249 @@ public final class VentanaArchivos extends javax.swing.JFrame {
             Sesion.Usuarioglobal.getMatrizAdyacente().buscar(temp.getX(),temp.getY()).getArbolAVL().insertar(archivo2);
         }
         this.LlenarArchivos();
-    }//GEN-LAST:event_jButton1ActionPerformed
+    }//GEN-LAST:event_jEditarActionPerformed
 
+    private void jGrafoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jGrafoActionPerformed
+           Sesion.Usuarioglobal.getMatrizAdyacente().grafo();
+    }//GEN-LAST:event_jGrafoActionPerformed
+
+    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+        Sesion s = new Sesion();
+        this.dispose();
+        s.setVisible(true);
+    }//GEN-LAST:event_jButton2ActionPerformed
+
+    private void jButtonCompartirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonCompartirActionPerformed
+        try{            
+            if(interseccion == null){
+            NodoMatriz temp = this.nodoPadre;
+            temp.getArbolAVL().inno();
+            Archivo archivo = temp.getArbolAVL().getListaArchivos().get(this.jListArchivos.getSelectedIndex());
+            String amigo = "";
+            amigo =JOptionPane.showInputDialog(null, "Ingrese usuario a compartir"); 
+            Main.tablaHash.Compartir(amigo, archivo);
+            
+        }else{
+            NodoMatriz temp = this.interseccion;
+            temp.getArbolAVL().inno();
+            Archivo archivo = temp.getArbolAVL().getListaArchivos().get(this.jListArchivos.getSelectedIndex());
+            String amigo = "";
+            amigo =JOptionPane.showInputDialog(null, "Ingrese usuario a compartir"); 
+            Main.tablaHash.Compartir(amigo, archivo);
+        }
+        }catch(ArrayIndexOutOfBoundsException e){
+            JOptionPane.showMessageDialog(null, "Seleccione un archivo correctamente");
+        }
+        
+    }//GEN-LAST:event_jButtonCompartirActionPerformed
+
+    private void jButtonEliminarArchivosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonEliminarArchivosActionPerformed
+        BufferedReader br = null;
+        try {        
+            FileNameExtensionFilter filtro = new FileNameExtensionFilter(null, "csv");
+            JFileChooser buscador = new JFileChooser();
+            buscador.setFileFilter(filtro); 
+            buscador.addChoosableFileFilter(filtro);
+            buscador.showOpenDialog(buscador);    
+                    
+            String patch  = buscador.getSelectedFile().getAbsolutePath();
+                if(patch.endsWith(".csv") | patch.endsWith(".CSV") ){
+                                             
+                FileReader archivo = new FileReader(patch);
+                br = new BufferedReader(new InputStreamReader(new FileInputStream(patch), "UTF8"));
+                String line = "";    
+                int x =0;
+                int columnaArchivo = 0;
+                int columnaContenido = 1;
+                boolean bandera1 = false;
+                boolean bandera2 = false;
+                String delimitador = JOptionPane.showInputDialog(null, "Signo de separcion");
+                    while ((line = br.readLine().trim()) != null) {
+                        String[] separar = line.split(delimitador,2);                
+                        try{                           
+                        
+                            if(x==0){
+                                if(separar[0].equals("Archivo")){
+                                    columnaArchivo = 0;
+                                    bandera1 = true;
+                                }
+                                if(separar[0].equals("Contenido")){
+                                    columnaContenido = 0;
+                                    bandera1 = true;
+                                }
+                                if(separar[1].equals("Archivo")){
+                                    columnaArchivo = 1;
+                                    bandera2 = true;
+                                }
+                                if(separar[1].equals("Contenido")){
+                                    columnaContenido = 1;
+                                    bandera2 = true;
+                                }
+                                
+                                if(bandera1 && bandera2){
+                                    x++;
+                                }else{
+                                    JOptionPane.showMessageDialog(null, "Cabeceras de archivo invalidades");
+                                    break;
+                                }
+                                
+                                continue;
+                            }
+                        
+                            
+                            String nombreArchivo = separar[columnaArchivo].replace("\"", "");
+                            String contenidoArchivo = separar[columnaContenido].replace("\"", "");
+                                
+                                if(this.interseccion==null){
+                                    NodoMatriz temp = Sesion.Usuarioglobal.getMatrizAdyacente().buscar(nodoPadre.getX(), nodoPadre.getY());
+                                    Sesion.Usuarioglobal.getMatrizAdyacente().buscar(temp.getX(),temp.getY()).getArbolAVL().insertar(new Archivo(nombreArchivo,contenidoArchivo));            
+                                }else{
+                                    NodoMatriz temp = Sesion.Usuarioglobal.getMatrizAdyacente().buscar(interseccion.getX(), interseccion.getY());
+                                    Sesion.Usuarioglobal.getMatrizAdyacente().buscar(temp.getX(),temp.getY()).getArbolAVL().insertar(new Archivo(nombreArchivo,contenidoArchivo));
+                                }
+                                
+                            LlenarArchivos();
+ 
+                        }catch(Exception c){
+                            JOptionPane.showMessageDialog(null, "Error en la linea:"+line);
+                        }
+                            
+                    }
+                        
+                }                       
+            } catch (NullPointerException e) {        
+            } catch (FileNotFoundException e) {
+            } catch (IOException e) {
+            } finally {
+                try {
+                    if (null != br)
+                        br.close();
+                } catch (Exception e2) {
+                    e2.printStackTrace();
+            }
+        }   
+    }//GEN-LAST:event_jButtonEliminarArchivosActionPerformed
+
+    private void jButtonEliminarCarpetasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonEliminarCarpetasActionPerformed
+        int reply = JOptionPane.showConfirmDialog(null, "desea eliminar?", "Eliminar", JOptionPane.YES_NO_OPTION);
+        if (reply == JOptionPane.YES_OPTION) {       
+        try{
+            NodoMatriz temp = nodoPadre.getDerecha();
+         int index = jListCarpetas.getSelectedIndex();
+         for(int i=0; i<index;i++){
+             temp = temp.getDerecha();
+         }
+         System.out.println(temp.getArbolAVL().getRuta());
+         System.out.println("--------------------------------------------");
+         System.out.println(temp.getY());
+   
+         System.out.println("********************************************");
+         Sesion.Usuarioglobal.getMatrizAdyacente().recorrer();
+                  
+         String relacion = temp.getArbolAVL().getRuta();
+         
+         
+         
+         Sesion.Usuarioglobal.getMatrizAdyacente().eliminar(relacion);
+         
+         interseccion = Sesion.Usuarioglobal.getMatrizAdyacente().buscarInterseccion(this.jbusacador.getText());
+         if(interseccion!=null){
+            NodoMatriz padreTemp = Sesion.Usuarioglobal.getMatrizAdyacente().buscar(0, interseccion.getY());
+            
+            while(true){
+             if(padreTemp.getArbolAVL().getRuta().equals(interseccion.getArbolAVL().getRuta())){
+                 nodoPadre = padreTemp;
+                 break;
+             }else{
+                 padreTemp = padreTemp.getAbajo();
+             }
+         }        
+            
+        }
+        else{
+            nodoPadre = Sesion.Usuarioglobal.getMatrizAdyacente().buscar(0, 1);
+            this.yPadre = 1;
+            interseccion =  null;
+            this.jbusacador.setText("./");
+        }
+        this.yPadre = nodoPadre.getY();
+        LlenarArchivos();
+        LlenarCarpetas(); 
+        
+        }catch(NullPointerException w){
+            
+        }
+        }
+    }//GEN-LAST:event_jButtonEliminarCarpetasActionPerformed
+
+    private void jButtonEditarCarpetaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonEditarCarpetaActionPerformed
+ 
+       try{
+            NodoMatriz temp = nodoPadre.getDerecha();
+         int index = jListCarpetas.getSelectedIndex();
+         for(int i=0; i<index;i++){
+             temp = temp.getDerecha();
+         }
+         System.out.println(temp.getArbolAVL().getRuta());
+         System.out.println("--------------------------------------------");
+         System.out.println(temp.getY());
+   
+         System.out.println("********************************************");
+         Sesion.Usuarioglobal.getMatrizAdyacente().recorrer();
+                  
+         String nombreNuevoCarpeta = JOptionPane.showInputDialog(null, "Nuevo nombre");
+         String relacion = temp.getArbolAVL().getRuta();
+         
+         
+         String rutaVieja = temp.getArbolAVL().getRuta();
+         String rutaNueva = replaceLast(rutaVieja,temp.getArbolAVL().getNombreCarpeta(),nombreNuevoCarpeta);
+         String auxViejo =  temp.getArbolAVL().getNombreAuxiliar();
+         String auxNuevo =  replaceLast(auxViejo,temp.getArbolAVL().getNombreCarpeta(),nombreNuevoCarpeta);  
+         
+         
+         Sesion.Usuarioglobal.getMatrizAdyacente().editar(rutaVieja, temp.getArbolAVL().getNombreCarpeta(), auxViejo, rutaNueva, nombreNuevoCarpeta, auxNuevo);
+         
+         interseccion = Sesion.Usuarioglobal.getMatrizAdyacente().buscarInterseccion(this.jbusacador.getText());
+         if(interseccion!=null){
+            NodoMatriz padreTemp = Sesion.Usuarioglobal.getMatrizAdyacente().buscar(0, interseccion.getY());
+            
+            while(true){
+             if(padreTemp.getArbolAVL().getRuta().equals(interseccion.getArbolAVL().getRuta())){
+                 nodoPadre = padreTemp;
+                 break;
+             }else{
+                 padreTemp = padreTemp.getAbajo();
+             }
+         }        
+            
+        }
+        else{
+            nodoPadre = Sesion.Usuarioglobal.getMatrizAdyacente().buscar(0, 1);
+            this.yPadre = 1;
+            interseccion =  null;
+            this.jbusacador.setText("./");
+        }
+        this.yPadre = nodoPadre.getY();
+        LlenarArchivos();
+        LlenarCarpetas(); 
+        
+        }catch(NullPointerException w){
+            
+        }
+        
+    }//GEN-LAST:event_jButtonEditarCarpetaActionPerformed
+
+    
+    public static String replaceLast(String string, String toReplace, String replacement) {
+    int pos = string.lastIndexOf(toReplace);
+    if (pos > -1) {
+        return string.substring(0, pos)
+             + replacement
+             + string.substring(pos + toReplace.length(), string.length());
+    } else {
+        return string;
+    }
+    }
     /**
      * @param args the command line arguments
      */
@@ -553,12 +907,18 @@ public final class VentanaArchivos extends javax.swing.JFrame {
     private javax.swing.JButton EliminarArchivo;
     private javax.swing.JButton jAbrirCarpeta;
     private javax.swing.JButton jBuscar;
-    private javax.swing.JButton jButton1;
-    private javax.swing.JButton jCrear;
+    private javax.swing.JButton jButton2;
+    private javax.swing.JButton jButtonCompartir;
+    private javax.swing.JButton jButtonEditarCarpeta;
+    private javax.swing.JButton jButtonEliminarArchivos;
+    private javax.swing.JButton jButtonEliminarCarpetas;
     private javax.swing.JButton jCrearArchivo;
+    private javax.swing.JButton jCrearCarpeta;
+    private javax.swing.JButton jEditar;
     private javax.swing.JLabel jFecha;
     private javax.swing.JButton jGraficar;
     private javax.swing.JButton jGraficar1;
+    private javax.swing.JButton jGrafo;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JList<String> jListArchivos;

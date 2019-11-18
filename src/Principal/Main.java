@@ -21,8 +21,8 @@ public static TablaHash tablaHash;
         avl.inno();
         
         tablaHash = new TablaHash();
-        tablaHash.insertarUsuario(new Usuario("jesus","jesus"));
-        tablaHash.insertarUsuario(new Usuario("robert","jesus"));
+        tablaHash.insertarUsuario(new Usuario("jesus","jesuss"));
+        tablaHash.insertarUsuario(new Usuario("robert","jesuss"));
         tablaHash.insertarUsuario(new Usuario("emili","jesus"));
         tablaHash.insertarUsuario(new Usuario("marco dias","jesus"));
         tablaHash.insertarUsuario(new Usuario("fatima","jesus"));
@@ -47,7 +47,6 @@ public static TablaHash tablaHash;
         matrizAdyacente.insertar_elementos(2,2,new ArbolAVL("dos coma dos"));
         matrizAdyacente.insertar_elementos(3,5,new ArbolAVL("tre coma cinco"));
 
-        
 
         MatrizAdyacente matrizAdyacente2=new MatrizAdyacente();
 

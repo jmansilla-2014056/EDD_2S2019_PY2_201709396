@@ -36,7 +36,7 @@ public class MatrizAdyacente {
     }
 
 
-    public void insertarEnLaInterseccion(String nodoPadre, String nodoHijo){
+    public void insertarEnLaInterseccion(String nodoPadre, String nodoHijo, String aux, String nombre){
         NodoMatriz nm = buscar(0,0);
         NodoMatriz nb = nm.getAbajo();
         NodoMatriz ng = nm.getDerecha();
@@ -58,11 +58,52 @@ public class MatrizAdyacente {
                 ng = ng.getDerecha();
             }
         }
-        this.insertar_elementos(x, y, new ArbolAVL(nodoHijo));
+        this.insertar_elementos(x, y, new ArbolAVL(nodoHijo,aux,nombre));
         
     }
             
-            
+    public void eliminar(String ruta){
+        MatrizAdyacente temp = new MatrizAdyacente();   
+        NodoMatriz aux = this.root;
+        int c = 1;
+        while (aux!=null) {
+            NodoMatriz aux1 = aux;
+            while (aux1!=null){              
+                if(aux1.getY()==-1 || aux1.getX() == -1){
+                    aux1 = aux1.getDerecha();
+                    continue;
+                }
+                if(!(aux1.getArbolAVL().getRuta().startsWith(ruta))){
+                    temp.insertar_elementos(aux1.getX(), aux1.getY(),aux1.getArbolAVL());
+                }
+                System.out.println(aux1.getX() +"," + aux1.getY() + " : " +  aux1.getArbolAVL().getRuta());
+                aux1 = aux1.getDerecha();
+                c++;
+            }
+            aux = aux.getAbajo();
+        }
+        
+        this.root =  new NodoMatriz(-1,-1,new ArbolAVL("Root"));
+        NodoMatriz auxx = temp.root;
+        while (auxx!=null) {
+            NodoMatriz auxx11 = auxx;
+            while (auxx11!=null){
+                
+                if(auxx11.getY()==-1 || auxx11.getX() == -1){
+                    auxx11 = auxx11.getDerecha();
+                    continue;
+                }               
+                if(!(auxx11.getArbolAVL().getRuta().startsWith(ruta))){
+                    this.insertar_elementos(auxx11.getX(), auxx11.getY(),auxx11.getArbolAVL());                  
+                }
+                System.out.println(auxx11.getX() +"," + auxx11.getY() + " : " +  auxx11.getArbolAVL().getRuta());
+                auxx11 = auxx11.getDerecha();
+                c++;
+            }
+            auxx = auxx.getAbajo();
+        }
+        
+    }
     
     public NodoMatriz insertar_ordenado_columna(NodoMatriz nuevo, NodoMatriz cabeza){
         NodoMatriz temp = cabeza;
@@ -171,6 +212,56 @@ public class MatrizAdyacente {
 
     }
 
+    public void editar(String rutaCompleta, String NombreCapetaViejo, String auxViejo ,String rutaNueva, String nombreCarpetaNuevo, String rutaAuxiliarNueva){
+        
+        MatrizAdyacente temp = new MatrizAdyacente();   
+        NodoMatriz aux = this.root;
+        int c = 1;
+        while (aux!=null) {
+            NodoMatriz aux1 = aux;
+            while (aux1!=null){              
+                if(aux1.getY()==-1 || aux1.getX() == -1){
+                    aux1 = aux1.getDerecha();
+                    continue;
+                }
+                if(aux1.getArbolAVL().getRuta().startsWith(rutaCompleta)){
+                    
+                    if(aux1.getX()==0 && aux1.getArbolAVL().getRuta().equals(rutaCompleta)){
+                        aux1.getArbolAVL().setNombreAuxiliar(nombreCarpetaNuevo);
+                    }
+                    
+                    if(aux1.getX()==0 && aux1.getArbolAVL().getRuta().equals(rutaCompleta)){
+                        aux1.getArbolAVL().setNombreAuxiliar(nombreCarpetaNuevo);
+                    }
+                                      
+                    if(aux1.getArbolAVL().getRuta().equals(rutaCompleta)){
+                        aux1.getArbolAVL().setNombreCarpeta(nombreCarpetaNuevo);
+                                                     
+                           if(aux1.getArbolAVL().getNombreAuxiliar().equals(auxViejo)){
+                               aux1.getArbolAVL().setNombreAuxiliar(rutaAuxiliarNueva);
+                               
+                               if(aux1.getArriba()!=null){
+                                   NodoMatriz nm = aux1.getArriba();
+                                   nm.getArbolAVL().setNombreAuxiliar(nombreCarpetaNuevo);
+                                   this.insertar_elementos(aux1.getX(), aux1.getY(),aux1.getArbolAVL());
+                               }
+                               
+                           }
+                    }
+                    
+                    aux1.getArbolAVL().setRuta(aux1.getArbolAVL().getRuta().replace(rutaCompleta, rutaNueva));
+                    
+                    this.insertar_elementos(aux1.getX(), aux1.getY(),aux1.getArbolAVL());
+                }
+                System.out.println(aux1.getX() +"," + aux1.getY() + " : " +  aux1.getArbolAVL().getRuta());
+                aux1 = aux1.getDerecha();
+                c++;
+            }
+            aux = aux.getAbajo();
+        }
+        
+    }
+    
     public void recorrer(){
         NodoMatriz aux = this.root;
         int c = 1;
@@ -233,6 +324,70 @@ public class MatrizAdyacente {
         return null;
     }
     
+    public void grafo(){
+        FileWriter fichero = null;
+        PrintWriter pw = null;
+        try {
+            
+            File miDir = new File (".");
+            fileName = new SimpleDateFormat("yyyyMMddHHmmss''").format(new Date());
+            fichero = new FileWriter(miDir.getAbsolutePath() + "//" + fileName+".txt");
+            pw = new PrintWriter(fichero);
+
+            pw.println("digraph {");
+            pw.println("node [shape = record];");
+            pw.println("graph [nodesep = 0.5, ranksep = 0.5]");
+            pw.println("rankdir=TB");
+            
+            
+            NodoMatriz nodo0 = this.buscar(0, 1);
+            
+            while(nodo0 != null){       
+                int x = this.contador(nodo0);                
+                pw.println("\""+nodo0.getArbolAVL().getRuta()+"\""+"[label=\""+nodo0.getArbolAVL().getNombreCarpeta()+"\\n"+"cantidad="+x+"\"]");               
+                nodo0 = nodo0.getAbajo();
+            }
+            
+            
+            NodoMatriz nodo = this.buscar(0, 1);
+            NodoMatriz horizontal; 
+            while(nodo != null){       
+                horizontal = nodo.getDerecha(); 
+                while(horizontal!=null){
+                    pw.println("\""+nodo.getArbolAVL().getRuta()+"\""+"->\""+horizontal.getArbolAVL().getRuta()+"\"");
+                    horizontal = horizontal.getDerecha();
+                }
+                nodo = nodo.getAbajo();
+            }
+            pw.println("}");
+            
+        }catch (Exception e){
+            System.out.println(e.toString());
+        }finally {
+            try {
+                // Nuevamente aprovechamos el finally para
+                // asegurarnos que se cierra el fichero.
+                if (null != fichero)
+                    fichero.close();
+            } catch (Exception e2) {
+                e2.printStackTrace();
+            }
+        }
+        creacionDibujo(fileName);
+    }
+    
+    
+    public int contador(NodoMatriz nm){
+        int x =0;
+        while(nm!=null){
+            if(nm.getDerecha()!=null){
+                x++;
+            }
+            nm = nm.getDerecha();
+        }
+        return x;
+    }
+    
     public void graficar(){
         FileWriter fichero = null;
         PrintWriter pw = null;
@@ -244,8 +399,8 @@ public class MatrizAdyacente {
             pw = new PrintWriter(fichero);
 
             pw.println("digraph {");
-            pw.println("node [shape = record, height=1, width=2, fontsize=8];");
-            pw.println("graph [nodesep = 2, ranksep = 1]");
+            pw.println("node [shape = record, height=0.5, width=1, fontsize=9];");
+            pw.println("graph [nodesep = 0.5, ranksep = 0.5]");
             pw.println("rankdir=TB");
             NodoMatriz tempA = this.root;
             NodoMatriz temp = this.root;
@@ -255,8 +410,8 @@ public class MatrizAdyacente {
             while (tempA != null){
                 if(tempA == this.root){
                     if(temp == this.root){
-                        pw.println("\""+temp.getX()+"-"+temp.getY()+"\"[label=\""+temp.getArbolAVL().getRuta()+
-                                "\"\n"+",pos=\""+(temp.getX()+1)+","+(temp.getY()+1)+"!\""+
+                        pw.println("\""+temp.getX()+"-"+temp.getY()+"\"[label=\""+temp.getArbolAVL().getNombreAuxiliar()+"\\n("+temp.getArbolAVL().getRuta()+
+                                ")\"\n"+",pos=\""+(temp.getX()+1)+","+(temp.getY()+1)+"!\""+
                                 "];");
                         temp = temp.getAbajo();
                     }
@@ -280,7 +435,8 @@ public class MatrizAdyacente {
                         primera = false;
                     }
                     else if(temp != null){
-                        pw.println("\"" +temp.getX()+"-"+temp.getY()+"\"[label=\""+temp.getArbolAVL().getRuta()+"\"];");
+                        pw.println("\"" +temp.getX()+"-"+temp.getY()+"\"[label=\""+temp.getArbolAVL().getNombreAuxiliar()+"\\n("+temp.getArbolAVL().getRuta()+
+                                ")\"];");
                         temp = temp.getAbajo();
                     }
                     else {

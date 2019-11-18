@@ -17,7 +17,19 @@ public class ArbolAVL {
     private NodoArbol raiz;
     private String ruta;
     private ArrayList<Archivo> listaArchivos;
+    private String nombreAuxiliar;
+    private String nombreCarpeta;
 
+    public String getNombreCarpeta() {
+        return nombreCarpeta;
+    }
+
+    public void setNombreCarpeta(String nombreCarpeta) {
+        this.nombreCarpeta = nombreCarpeta;
+    }
+    
+    
+    
     public ArrayList<Archivo> getListaArchivos() {
         return listaArchivos;
     }
@@ -28,6 +40,48 @@ public class ArbolAVL {
 
     public ArbolAVL(String nombre) {
         this.ruta = nombre;
+    }
+
+    
+    public ArbolAVL(String nombre, String nombreAuxiliar) {
+        this.ruta = nombre;
+        this.nombreAuxiliar = nombreAuxiliar;
+    }
+    
+     public ArbolAVL(String nombre, String nombreAuxiliar, String nombreCarpeta) {
+        this.ruta = nombre;
+        this.nombreAuxiliar = nombreAuxiliar;
+        this.nombreCarpeta = nombreCarpeta;
+    }
+    
+    public int altrura(NodoArbol na){
+        int x = 0;
+        int y = 0;
+        NodoArbol derecha = na.getHojaDerecha();
+        NodoArbol izquierda = na.getHojaIzquierda();
+        while(derecha!=null){
+            x++;
+            derecha = derecha.getHojaDerecha();
+        }
+        while(izquierda!=null){
+            y++;
+            izquierda = izquierda.getHojaIzquierda();
+        }
+        
+        if(x>=y){
+            return x;
+        }else{
+            return y;
+        }
+        
+    } 
+     
+    public String getNombreAuxiliar() {
+        return nombreAuxiliar;
+    }
+
+    public void setNombreAuxiliar(String nombreAuxiliar) {
+        this.nombreAuxiliar = nombreAuxiliar;
     }
 
     public NodoArbol getRaiz() {
@@ -42,8 +96,8 @@ public class ArbolAVL {
         return ruta;
     }
 
-    public void setRuta(String nombre) {
-        this.ruta = nombre;
+    public void setRuta(String ruta) {
+        this.ruta = ruta;
     }
 
     
@@ -147,7 +201,8 @@ public class ArbolAVL {
     
     
      public void Eliminar(Archivo archivo){
-        this.inno();
+        this.getListaArchivos().clear();
+        this.preorden(raiz);
         for(Archivo a : this.getListaArchivos()){
             if(a.getNombreArchivo().equals(archivo.getNombreArchivo())){
                 this.getListaArchivos().remove(a);
@@ -160,27 +215,7 @@ public class ArbolAVL {
         }
         
     }
-    
-    public void Eliminar(NodoArbol nodo){
-        this.inno();
-        for(Archivo a : this.getListaArchivos()){
-            if(a.getNombreArchivo().equals(nodo.getArchivo().getNombreArchivo())){
-                this.getListaArchivos().remove(a);
-                break;
-            }
-        }
-        this.raiz = null;
-        for(Archivo a: this.getListaArchivos()){
-            this.insertar(a);
-        }
-        
-    }
-    
-    
-    public void modificar(NodoArbol nodo){
-        
-    }
-    
+   
     public ArbolAVL insertar(Archivo archivo) {
         NodoArbol nuevo = new NodoArbol(archivo);
         this.inno();
@@ -206,10 +241,11 @@ public class ArbolAVL {
         return this;
     }    
     
-     public void preorden(NodoArbol aux) {
+     public void preorden(NodoArbol aux) {       
         //System.out.println("PreOrden");
         if (aux != null) {
             System.out.println(aux.getArchivo().getNombreArchivo());
+            this.getListaArchivos().add(aux.getArchivo());
             preorden(aux.getHojaIzquierda());
             preorden(aux.getHojaDerecha());
         }
@@ -259,12 +295,13 @@ public class ArbolAVL {
                     if(idea>peso){
                         idea = peso;
                     }
-                    pw.println(current.getArchivo().getNombreArchivo()+"[shape = record, label=\"{"+current.getArchivo().getNombreArchivo()+"| Fe:"+current.getFactorDeEquilibrio()+ "| Contenido:"+ current.getArchivo().getContenido().substring(0,idea)+ "| Fecha" + current.getArchivo().getFechas().toString() + "}\"]");
+                    int altura = this.altrura(current);
+                    pw.println("\""+current.getArchivo().getNombreArchivo()+"\""+"[shape = record, label=\"{"+current.getArchivo().getNombreArchivo()+"| Fe y altura: "+current.getFactorDeEquilibrio()+ " y "+ altura+ "| Contenido:"+ current.getArchivo().getContenido().substring(0,idea)+ "| Fecha: " + current.getArchivo().getFechas().toString() + "}\"]");
                     if(current.getHojaDerecha()!=null){
-                        pw.println(current.getArchivo().getNombreArchivo()+"->"+current.getHojaDerecha().getArchivo().getNombreArchivo());           
+                        pw.println("\""+current.getArchivo().getNombreArchivo()+"\""+"->"+"\""+current.getHojaDerecha().getArchivo().getNombreArchivo()+"\"");           
                     }
                     if(current.getHojaIzquierda()!=null){
-                        pw.println(current.getArchivo().getNombreArchivo()+"->"+current.getHojaIzquierda().getArchivo().getNombreArchivo());           
+                        pw.println("\""+current.getArchivo().getNombreArchivo()+"\""+"->"+"\""+current.getHojaIzquierda().getArchivo().getNombreArchivo()+"\"");           
                     }
                     current = current.getHojaDerecha();
                 }else{

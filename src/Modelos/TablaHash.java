@@ -54,11 +54,9 @@ public class TablaHash {
     public void setItems(int items) {
         this.items = items;
     }
-
     
-
     public void insertarUsuario(Usuario usuario){
-        if(!existe(usuario.getUsuario())){
+        if((!existe(usuario.getUsuario())) && usuario.getContrasena().length() >= 6){
             int hash = (usuario.getUsuario().hashCode() & 0x7fffffff) % size;
             if (usuarios[hash]== null){
                 usuarios[hash] = usuario;
@@ -106,7 +104,7 @@ public class TablaHash {
             this.items++;
             reSize();
         }else{
-            JOptionPane.showMessageDialog(null, "No se pueden insertar usuario con username duplicados");
+            JOptionPane.showMessageDialog(null, "Problema con:"+ usuario.getUsuario() + ",No se pueden insertar usuario con username duplicados o contraseñas cortas");
         }
 
     }
@@ -161,7 +159,20 @@ public class TablaHash {
             }
         }
     }
-
+    
+     public void Compartir(String amigo, Archivo archivo){
+        for(Usuario u: usuarios){
+            if(u != null){
+                if(u.getUsuario().equals(amigo)){
+                    u.getMatrizAdyacente().buscar(0, 1).getArbolAVL().insertar(archivo);
+                     JOptionPane.showMessageDialog(null, "Se compartio correctamente");
+                    return;
+                }
+            }
+        }
+        JOptionPane.showMessageDialog(null, "No se puedo compartir el archivo");
+    }
+    
     public void reportar(){
         FileWriter fichero = null;
         PrintWriter pw = null;
