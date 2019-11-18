@@ -233,7 +233,9 @@ public class MatrizAdyacente {
                     if(aux1.getX()==0 && aux1.getArbolAVL().getRuta().equals(rutaCompleta)){
                         aux1.getArbolAVL().setNombreAuxiliar(nombreCarpetaNuevo);
                     }
-                                      
+                           
+                     
+                    
                     if(aux1.getArbolAVL().getRuta().equals(rutaCompleta)){
                         aux1.getArbolAVL().setNombreCarpeta(nombreCarpetaNuevo);
                                                      
@@ -250,6 +252,14 @@ public class MatrizAdyacente {
                     }
                     
                     aux1.getArbolAVL().setRuta(aux1.getArbolAVL().getRuta().replace(rutaCompleta, rutaNueva));
+                    
+                    String[] parche = aux1.getArbolAVL().getRuta().split("/");
+                    String x = parche[parche.length-2];
+                    String y = parche[parche.length-1];
+                    
+                    if(aux1.getY()>0 && aux1.getY()>0){
+                        aux1.getArbolAVL().setNombreAuxiliar(x+"/"+y);
+                    }
                     
                     this.insertar_elementos(aux1.getX(), aux1.getY(),aux1.getArbolAVL());
                 }

@@ -1,1 +1,0 @@
-manejador.ListEntryCellRenderer

@@ -3,6 +3,7 @@ package Principal;
 import Modelos.ArbolAVL;
 import Modelos.Archivo;
 import Modelos.MatrizAdyacente;
+import Modelos.Pila;
 import Modelos.TablaHash;
 import Modelos.Usuario;
 import Vistas.Sesion;
@@ -10,35 +11,17 @@ import Vistas.Sesion;
 public class Main {
     
 public static TablaHash tablaHash;
+public static Pila pila;
     public static void main (String [ ] args) {
 
-          
-        ArbolAVL avl = new ArbolAVL("x");
-        avl.insertar(new Archivo("haahah.txt","a"));
-        avl.insertar(new Archivo("amen.mp4","b"));
-        avl.insertar(new Archivo("bebecita.mp3","c"));
-     //   avl.preorden(avl.getRaiz());
-        avl.inno();
+        pila = new Pila();
         
         tablaHash = new TablaHash();
-        tablaHash.insertarUsuario(new Usuario("jesus","jesuss"));
-        tablaHash.insertarUsuario(new Usuario("robert","jesuss"));
-        tablaHash.insertarUsuario(new Usuario("emili","jesus"));
-        tablaHash.insertarUsuario(new Usuario("marco dias","jesus"));
-        tablaHash.insertarUsuario(new Usuario("fatima","jesus"));
-        tablaHash.insertarUsuario(new Usuario("yisus","jesus"));
-        tablaHash.insertarUsuario(new Usuario("Eli","jesus"));
-        tablaHash.insertarUsuario(new Usuario("Tu papa","jesus"));
-        tablaHash.insertarUsuario(new Usuario("EL master","jesus"));
-        tablaHash.insertarUsuario(new Usuario("el crack","jesus"));
-        tablaHash.insertarUsuario(new Usuario("el puto amo","jesus"));
-        tablaHash.insertarUsuario(new Usuario("la mera tos","jesus"));
-        tablaHash.insertarUsuario(new Usuario("la mera tos con flema","jesus"));
-        tablaHash.insertarUsuario(new Usuario("jesus bendito","jesus"));
-        tablaHash.insertarUsuario(new Usuario("auron","jesus"));
-        tablaHash.insertarUsuario(new Usuario("el pequeño auron","jesus"));
+        tablaHash.insertarUsuario(new Usuario("admin","123456"));
+        tablaHash.insertarUsuario(new Usuario("jesus","123456"));
+        tablaHash.insertarUsuario(new Usuario("emili","123456"));
         tablaHash.Reccorer();
-    
+        //tablaHash.reportar();
 
         MatrizAdyacente matrizAdyacente=new MatrizAdyacente();
 

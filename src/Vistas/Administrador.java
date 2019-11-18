@@ -5,6 +5,23 @@
  */
 package Vistas;
 
+import Modelos.Archivo;
+import Modelos.NodoMatriz;
+import Principal.Main;
+import java.io.BufferedReader;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import javax.swing.JFileChooser;
+import javax.swing.JOptionPane;
+import javax.swing.filechooser.FileNameExtensionFilter;
+import Modelos.Usuario;
+import java.io.FileWriter;
+import java.io.PrintWriter;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 /**
  *
  * @author User
@@ -27,22 +44,175 @@ public class Administrador extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        jButton1 = new javax.swing.JButton();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        jTextArea1 = new javax.swing.JTextArea();
+        jLabel1 = new javax.swing.JLabel();
+        jButton2 = new javax.swing.JButton();
+        jButton3 = new javax.swing.JButton();
+
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+
+        jButton1.setText("Carga Masivo Usuarios");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
+
+        jTextArea1.setColumns(20);
+        jTextArea1.setRows(5);
+        jScrollPane1.setViewportView(jTextArea1);
+
+        jLabel1.setText("Log");
+
+        jButton2.setText("Ver Historial");
+        jButton2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton2ActionPerformed(evt);
+            }
+        });
+
+        jButton3.setText("Ver Usuarios");
+        jButton3.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton3ActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 400, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addGap(66, 66, 66)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jButton3, javax.swing.GroupLayout.PREFERRED_SIZE, 199, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                        .addGroup(layout.createSequentialGroup()
+                            .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 199, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 193, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(jLabel1)
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 444, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(76, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 300, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addGap(24, 24, 24)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(18, 18, 18)
+                .addComponent(jButton3, javax.swing.GroupLayout.PREFERRED_SIZE, 55, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addComponent(jLabel1)
+                .addGap(18, 18, 18)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(42, Short.MAX_VALUE))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+          BufferedReader br = null;
+          int x =0;
+          int error = 0;
+        try {        
+            FileNameExtensionFilter filtro = new FileNameExtensionFilter(null, "csv");
+            JFileChooser buscador = new JFileChooser();
+            buscador.setFileFilter(filtro); 
+            buscador.addChoosableFileFilter(filtro);
+            buscador.showOpenDialog(buscador);    
+                    
+            String patch  = buscador.getSelectedFile().getAbsolutePath();
+                if(patch.endsWith(".csv") | patch.endsWith(".CSV") ){
+                                             
+                FileReader archivo = new FileReader(patch);
+                br = new BufferedReader(new InputStreamReader(new FileInputStream(patch), "UTF8"));
+                String line = "";    
+                
+                int columnaUsuario = 0;
+                int columnaPassword = 1;
+                boolean bandera1 = false;
+                boolean bandera2 = false;
+                String delimitador = JOptionPane.showInputDialog(null, "Signo de separcion");
+                    while ((line = br.readLine().trim()) != null) {
+                        String[] separar = line.split(delimitador,2);                
+                        try{                           
+                            
+                            if(x==0){
+                                if(separar[0].equals("Usuario")){
+                                    columnaUsuario = 0;
+                                    bandera1 = true;
+                                }
+                                if(separar[0].equals("Password")){
+                                    columnaPassword = 0;
+                                    bandera1 = true;
+                                }
+                                if(separar[1].equals("Usuario")){
+                                    columnaUsuario = 1;
+                                    bandera2 = true;
+                                }
+                                if(separar[1].equals("Password")){
+                                    columnaPassword = 1;
+                                    bandera2 = true;
+                                }
+                                
+                                if(bandera1 && bandera2){
+                                    x++;
+                                }else{
+                                    JOptionPane.showMessageDialog(null, "Cabeceras de archivo invalidades");
+                                    break;
+                                }
+                                
+                                continue;
+                            }
+                            x++;
+                            if(Main.tablaHash.insertarUsuario(new Usuario(separar[columnaUsuario],separar[columnaPassword]))){
+                                this.jTextArea1.setText(this.jTextArea1.getText() + "\n" +  "Se inserto correcto:"+line);
+                            }else{
+                                this.jTextArea1.setText(this.jTextArea1.getText() + "\n" +  "Error en la linea:"+line);
+                                error++; 
+                            }
+ 
+                        }catch(Exception c){
+                            this.jTextArea1.setText(this.jTextArea1.getText() + "\n" +  "Error en la linea:"+line);
+                            error++; 
+                        }
+                            
+                    }
+                     
+                        
+                }                       
+            } catch (NullPointerException e) {        
+                
+            } catch (FileNotFoundException e) {
+            } catch (IOException e) {
+            } finally {
+                try {
+                    if (null != br)
+                        br.close();
+                } catch (Exception e2) {
+                    e2.printStackTrace();
+            }
+        }   
+        this.jTextArea1.setText(this.jTextArea1.getText() + "\n" +  "Usuarios correctos;"+ (x-error));
+        this.jTextArea1.setText(this.jTextArea1.getText() + "\n" +  "Usuarios incorrectos;"+ (error));
+    }//GEN-LAST:event_jButton1ActionPerformed
+
+    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
+        Main.tablaHash.reportar();
+    }//GEN-LAST:event_jButton3ActionPerformed
+
+    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+        // TODO add your handling code here:
+        Main.pila.reportar();
+    }//GEN-LAST:event_jButton2ActionPerformed
+
+        
     /**
      * @param args the command line arguments
      */
@@ -79,5 +249,11 @@ public class Administrador extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton jButton1;
+    private javax.swing.JButton jButton2;
+    private javax.swing.JButton jButton3;
+    private javax.swing.JLabel jLabel1;
+    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JTextArea jTextArea1;
     // End of variables declaration//GEN-END:variables
 }

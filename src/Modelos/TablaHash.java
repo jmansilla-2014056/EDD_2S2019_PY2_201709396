@@ -1,9 +1,12 @@
 package Modelos;
 
+import Principal.Main;
 import javax.swing.*;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.PrintWriter;
+import java.math.BigInteger;
+import java.security.MessageDigest;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -55,8 +58,25 @@ public class TablaHash {
         this.items = items;
     }
     
-    public void insertarUsuario(Usuario usuario){
+    
+    public static String encript(String pass){
+        try{
+            MessageDigest procesoEncriptar = MessageDigest.getInstance("SHA-256");
+            procesoEncriptar.reset();
+            procesoEncriptar.update(pass.getBytes("utf8"));
+            String encriptado = String.format("%064x", new BigInteger(1, procesoEncriptar.digest()));
+            return encriptado;  
+        }catch(Exception e){
+            
+        }
+        return null;
+    }
+    
+    
+    public boolean insertarUsuario(Usuario usuario){
+        boolean retornar = true;
         if((!existe(usuario.getUsuario())) && usuario.getContrasena().length() >= 6){
+         //   usuario.setContrasena(encript(usuario.getContrasena()));
             int hash = (usuario.getUsuario().hashCode() & 0x7fffffff) % size;
             if (usuarios[hash]== null){
                 usuarios[hash] = usuario;
@@ -78,6 +98,7 @@ public class TablaHash {
                     }else{
                         while (true){
                                 hash=hash*hash;
+                                hash++;
                                 if(hash>this.size){
                                     int x = 0;
                                     for(Usuario u:usuarios){
@@ -104,9 +125,10 @@ public class TablaHash {
             this.items++;
             reSize();
         }else{
+            retornar = false;
             JOptionPane.showMessageDialog(null, "Problema con:"+ usuario.getUsuario() + ",No se pueden insertar usuario con username duplicados o contraseñas cortas");
         }
-
+        return retornar;
     }
 
     public void reSize(){
@@ -166,6 +188,7 @@ public class TablaHash {
                 if(u.getUsuario().equals(amigo)){
                     u.getMatrizAdyacente().buscar(0, 1).getArbolAVL().insertar(archivo);
                      JOptionPane.showMessageDialog(null, "Se compartio correctamente");
+                     Main.pila.apilar("Compartir Archivos");
                     return;
                 }
             }
@@ -192,6 +215,7 @@ public class TablaHash {
                     "            <TR>\n" +
                     "                <TD>INDEX</TD>\n" +
                     "                <TD>USER</TD>\n" +
+                    "                <TD>FECHA</TD>\n" +
                     "\t      <TD>PASSWOR</TD>\n" +
                     "            </TR>");
 
@@ -207,13 +231,19 @@ public class TablaHash {
                     pw.println(u.getUsuario());
                     pw.println("</TD>");
                     pw.println("<TD>");
-                    pw.println(u.getContrasena());
+                    pw.println(u.getFecha().toString());
+                    pw.println("</TD>");
+                    pw.println("<TD>");
+                    pw.println(encript(u.getContrasena()));
                     pw.println("</TD>");
                     pw.println("</TR>");
                 }else{
                     pw.println("<TR>");
                     pw.println("<TD>");
                     pw.println(String.valueOf(count));
+                    pw.println("</TD>");
+                    pw.println("<TD>");
+                    pw.println();
                     pw.println("</TD>");
                     pw.println("<TD>");
                     pw.println();

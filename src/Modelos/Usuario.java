@@ -33,8 +33,16 @@ public class Usuario {
         this.contrasena = contrasena;
     }
 
+    public LocalDateTime getFecha() {
+        return fecha;
+    }
+
+    public void setFecha(LocalDateTime fecha) {
+        this.fecha = fecha;
+    }
 
 
+   
     public Usuario(String usuario, String contrasena) {
         this.fecha = LocalDateTime.now();
         this.matrizAdyacente = new MatrizAdyacente();

@@ -200,7 +200,7 @@ public class ArbolAVL {
     }    
     
     
-     public void Eliminar(Archivo archivo){
+    public void Eliminar(Archivo archivo){
         this.getListaArchivos().clear();
         this.preorden(raiz);
         for(Archivo a : this.getListaArchivos()){
@@ -241,7 +241,7 @@ public class ArbolAVL {
         return this;
     }    
     
-     public void preorden(NodoArbol aux) {       
+    public void preorden(NodoArbol aux) {       
         //System.out.println("PreOrden");
         if (aux != null) {
             System.out.println(aux.getArchivo().getNombreArchivo());
@@ -268,7 +268,6 @@ public class ArbolAVL {
     }
      
       
-    
     public void graficar(){
         FileWriter fichero = null;
         PrintWriter pw = null;
